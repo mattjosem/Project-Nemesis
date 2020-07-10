@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item   android:id="@+id/action_sign_out"
+        android:orderInCategory="100"
+        android:title="@string/action_sign_out"
+        app:showAsAction="never" />
+
+    <item   android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item   android:id="@+id/action_change_theme"
+        android:orderInCategory="100"
+        android:title="@string/action_change_theme"
+        app:showAsAction="never">
+            <menu>
+                <item android:id="@+id/action_defaultColor"
+                        android:title="@string/action_default_color"/>
+                <item android:id="@+id/action_PINK"
+                    android:title="@string/action_pink_theme"/>
+            </menu>
+
+
+
+    </item>
+
+
+</menu>

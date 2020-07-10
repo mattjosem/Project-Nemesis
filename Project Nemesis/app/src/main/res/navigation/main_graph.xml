@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/navigation_home">
+
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.TCSS450GROUP1.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_weather"
+        android:name="com.example.TCSS450GROUP1.ui.weather.WeatherListFragment"
+        android:label="@string/title_weather"
+        tools:layout="@layout/fragment_weather_list" >
+        <action
+            android:id="@+id/action_navigation_weather_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <argument
+            android:name="latitude"
+            app:argType="string"
+            android:defaultValue='""' />
+        <argument
+            android:name="longitude"
+            app:argType="string"
+            android:defaultValue='""' />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_chatold"
+        android:name="com.example.TCSS450GROUP1.ui.chat.ChatFragment"
+        android:label="@string/title_chat"
+        tools:layout="@layout/fragment_chat" >
+        <argument
+            android:name="chatID"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_chat"
+        android:name="com.example.TCSS450GROUP1.ui.chat.ChatListFragment"
+        android:label="@string/title_chat"
+        tools:layout="@layout/fragment_chat_list">
+        <action
+            android:id="@+id/action_chatListFragment_to_navigation_chat"
+            app:destination="@id/navigation_chatold" />
+        <action
+            android:id="@+id/action_navigation_chat_to_addChatFragment"
+            app:destination="@id/addChatFragment" />
+        <action
+            android:id="@+id/action_navigation_chat_to_addToChatFragment"
+            app:destination="@id/addToChatFragment" />
+        <action
+            android:id="@+id/action_navigation_chat_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_connections"
+        android:name="com.example.TCSS450GROUP1.ui.connections.ContactsListFragment"
+        android:label="@string/title_connections"
+        tools:layout="@layout/fragment_contacts_list" >
+        <action
+            android:id="@+id/action_navigation_connections_to_deleteContact"
+            app:destination="@id/deleteContact" />
+        <action
+            android:id="@+id/action_navigation_connections_to_addContact"
+            app:destination="@id/addContact" />
+        <action
+            android:id="@+id/action_navigation_connections_to_contactChatFragment"
+            app:destination="@id/contactChatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deleteContact"
+        android:name="com.example.TCSS450GROUP1.ui.connections.DeleteContact"
+        android:label="@string/title_delete_contact"
+        tools:layout="@layout/fragment_delete_contact">
+        <argument
+            android:name="contact"
+            app:argType="com.example.TCSS450GROUP1.ui.connections.Contacts" />
+        <action
+            android:id="@+id/action_deleteContact_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/addContact"
+        android:name="com.example.TCSS450GROUP1.ui.connections.AddContact"
+        android:label="@string/title_add_contact"
+        tools:layout="@layout/fragment_add_contact">
+        <action
+            android:id="@+id/action_addContact_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.TCSS450GROUP1.ui.weather.MapFragment"
+        android:label="MapFragment" >
+        <action
+            android:id="@+id/action_mapFragment_to_navigation_weather"
+            app:destination="@id/navigation_weather"
+            app:popUpToInclusive="false">
+            <argument android:name="latitude" />
+            <argument android:name="longitude" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/addChatFragment"
+        android:name="com.example.TCSS450GROUP1.ui.chat.AddChatFragment"
+        android:label="@string/title_add_chat">
+        <action
+            android:id="@+id/action_addChatFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/addToChatFragment"
+        android:name="com.example.TCSS450GROUP1.ui.chat.AddToChatFragment"
+        android:label="@string/title_add_user_to_chat"
+        tools:layout="@layout/fragment_add_to_chat">
+    <action
+        android:id="@+id/action_addToChatFragment_to_navigation_home"
+        app:destination="@id/navigation_home" />
+    <argument
+        android:name="chatID"
+        app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactChatFragment"
+        android:name="com.example.TCSS450GROUP1.ui.connections.ContactChatFragment"
+        android:label="fragment_contact_chat"
+        tools:layout="@layout/fragment_contact_chat" >
+        <argument
+            android:name="contact"
+            app:argType="com.example.TCSS450GROUP1.ui.connections.Contacts" />
+        <action
+            android:id="@+id/action_contactChatFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+</navigation>

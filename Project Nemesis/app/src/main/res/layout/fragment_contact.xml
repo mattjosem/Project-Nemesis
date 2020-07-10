@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.connections.ContactFragment">
+
+
+    <EditText
+        android:id="@+id/connectionsSearchEditText"
+        android:layout_width="292dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="@string/Search_Contacts"
+        android:inputType="textPersonName"
+        android:textAlignment="textStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/connectionsSearchButton"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="45dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/connectionsSearchEditText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/contact_names"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="412dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_delete_contact"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/button_add_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="46dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/button_add_contact"
+        app:layout_constraintEnd_toStartOf="@+id/button_delete_contact"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_delete_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="46dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/button_delete_contact"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_add_contact"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="118dp"
+        android:layout_marginEnd="411dp"
+        android:layout_marginBottom="613dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_begin="118dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
