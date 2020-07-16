@@ -23,17 +23,18 @@
         tools:layout_editor_absoluteX="1dp">
 
         <TextView
-            android:id="@+id/text_hour"
+            android:id="@+id/text_type_day"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/teal_primary"
+            android:background="?attr/colorPrimary"
             android:paddingLeft="8dp"
-            android:paddingTop="8dp"
+            android:paddingTop="4dp"
             android:paddingRight="8dp"
+            android:paddingBottom="4dp"
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textColor="@color/primaryTextColor"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -41,47 +42,50 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_city"
+            android:id="@+id/text_day_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
+            android:paddingTop="2dp"
             android:paddingRight="8dp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="2dp"
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="30sp"
+            android:textSize="16sp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_hour" />
+            app:layout_constraintTop_toBottomOf="@id/text_type_day" />
 
         <TextView
             android:id="@+id/text_temp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
+            android:paddingTop="2dp"
             android:paddingRight="8dp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="2dp"
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="42sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_city" />
+            app:layout_constraintTop_toBottomOf="@id/text_day_time" />
 
         <TextView
             android:id="@+id/text_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
+            android:paddingTop="2dp"
             android:paddingRight="8dp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="4dp"
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="30sp"
+            android:textSize="16sp"
             android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

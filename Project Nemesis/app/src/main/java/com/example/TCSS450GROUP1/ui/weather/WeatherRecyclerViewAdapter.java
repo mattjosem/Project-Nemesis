@@ -1,13 +1,10 @@
 package com.example.TCSS450GROUP1.ui.weather;
 
-import android.graphics.drawable.Icon;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.TCSS450GROUP1.R;
@@ -61,9 +58,9 @@ public class WeatherRecyclerViewAdapter extends
         }
 
         void setWeatherPost(final WeatherPost post) {
-            binding.textCity.setText(post.getCityName());
+            binding.textDayTime.setText(post.getDayTime());
             binding.textDescription.setText(post.getWeatherDescription());
-            binding.textHour.setText(post.getTime());
+            binding.textTypeDay.setText(post.getTypeDay());
             binding.textTemp.setText(post.getTemperature());
 
         }}

@@ -11,18 +11,13 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.TCSS450GROUP1.io.RequestQueueSingleton;
-import com.example.TCSS450GROUP1.ui.connections.Contacts;
-import com.example.TCSS450GROUP1.ui.home.HomeViewModel;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,23 +38,16 @@ import java.util.Objects;
 public class WeatherListViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<WeatherPost>> mWeatherPostsHourly;
-    private MutableLiveData<List<WeatherPost>> mWeatherPostsFiveDay;
     private MutableLiveData<Location> mLocation;
-
     private MutableLiveData<JSONObject> mResponseCurrent;
-    private MutableLiveData<JSONObject> mResponseFiveDay;
 
 
     public WeatherListViewModel(@NonNull Application application) {
         super(application);
         mResponseCurrent = new MutableLiveData<>();
         mResponseCurrent.setValue(new JSONObject());
-        mResponseFiveDay = new MutableLiveData<>();
-        mResponseFiveDay.setValue(new JSONObject());
         mWeatherPostsHourly = new MutableLiveData<>();
         mWeatherPostsHourly.setValue(new ArrayList<>());
-        mWeatherPostsFiveDay = new MutableLiveData<>();
-        mWeatherPostsFiveDay.setValue(new ArrayList<>());
         mLocation = new MediatorLiveData<>();
     }
 
@@ -67,14 +55,12 @@ public class WeatherListViewModel extends AndroidViewModel {
     public void addWeatherListObserver(@NonNull LifecycleOwner owner,
                                        @NonNull Observer<? super List<WeatherPost>> observer) {
         mWeatherPostsHourly.observe(owner, observer);
-        mWeatherPostsFiveDay.observe(owner, observer);
     }
 
 
     public void addResponseObserver(@NonNull LifecycleOwner owner,
                                     @NonNull Observer<? super JSONObject> observer) {
         mResponseCurrent.observe(owner, observer);
-        mResponseFiveDay.observe(owner, observer);
     }
 
 
@@ -94,6 +80,7 @@ public class WeatherListViewModel extends AndroidViewModel {
     public Location getCurrentLocation() {
         return new Location(mLocation.getValue());
     }
+
 
     /**
      * handles possible error with database call
@@ -122,26 +109,22 @@ public class WeatherListViewModel extends AndroidViewModel {
         }
     }
 
+
     /**
      * handles the result from the database call
      * @param result the result from the database call.
      */
     private void handleResult(final JSONObject result) {
-        Log.i("THE RESULT!!!!!!!!!!!!!!", result.toString());
+        Log.i("THE RESULT FROM JSON", result.toString());
         if (!(result.has("current")
                 && result.has("hourly")
                 && result.has("forecast"))) {
             throw new IllegalStateException("Unexpected response in WeatherListViewModel: " + result);
         }
         try {
-//            ArrayList<WeatherPost> wPosts = new ArrayList<>();
-
-            //For the Current
-            //To get the message json
-
-            // THERE ARE 50 HOURS IN THE HOURLY BTW //
+            // THERE ARE 50 HOURS IN THE JSON, NOT JUST THE 24 NEEDED //
             String current = result.getString("current");
-            Log.i("CURRENT FROM PHONE LOCATION", current);
+            Log.i("CURRENT WEATHER INFO", current);
             // gets the 3 split into an array, starts at 1 for some reason
             String[] splits = current.split("dt: |temp: |Weather:");
 
@@ -155,11 +138,11 @@ public class WeatherListViewModel extends AndroidViewModel {
             // a recyclerview of 30 different clicks data
             mWeatherPostsHourly.getValue().clear();
 
-            mWeatherPostsHourly.getValue().add(new WeatherPost.Builder(currentTemp, currentDescription)
-                    //TIME IS THE CARD TITLE
-                                    .addTime("CURRENT WEATHER")
-                                    .addCityName(currentTime)
-                                    .build());
+            mWeatherPostsHourly.getValue().add(
+                    new WeatherPost.Builder(currentTemp, currentDescription.toUpperCase())
+                            .addTypeDay("CURRENT WEATHER")
+                            .addDayTime(currentTime)
+                            .build());
 
             String hourly = result.getString("hourly");
             String[] hourlysplits = hourly.split("dt: |temp: |Weather:", 150);
@@ -169,12 +152,13 @@ public class WeatherListViewModel extends AndroidViewModel {
             int dsc = 3;
             while (dt < 71) {
                 String hourlytmp = kelvinToFar(hourlysplits[tmp].trim());
-                String  hourlydsc= hourlysplits[dsc].trim();
+                String hourlydsc= hourlysplits[dsc].trim();
                 String hourlydt = unixToNormal(hourlysplits[dt].trim());
 
-                mWeatherPostsHourly.getValue().add(new WeatherPost.Builder(hourlytmp.trim(), hourlydsc.trim())
-                        .addTime("24-HOUR WEATHER")
-                        .addCityName(hourlydt)
+                mWeatherPostsHourly.getValue().add(
+                        new WeatherPost.Builder(hourlytmp.trim(), hourlydsc.trim().toUpperCase())
+                        .addTypeDay("24-HOUR WEATHER")
+                        .addDayTime(hourlydt)
                         .build());
                 dt += 3;
                 tmp += 3;
@@ -182,7 +166,6 @@ public class WeatherListViewModel extends AndroidViewModel {
             }
 
             String fiveday = result.getString("forecast");
-            Log.i("fd", fiveday);
             String[] fivedaysplits = fiveday.split("dt: |temp: |Weather:", 20);
 
             int fd_dt = 1;
@@ -191,12 +174,13 @@ public class WeatherListViewModel extends AndroidViewModel {
             int daysAdded = 0;
             while (fd_dt < 14) {
                 String fivedaytmp = kelvinToFar(fivedaysplits[fd_tmp]).trim();
-                String  fivedaydsc = (fivedaysplits[fd_dsc]).trim();
+                String fivedaydsc = (fivedaysplits[fd_dsc]).trim();
                 String fivedaydt = unixToDay(fivedaysplits[fd_dt].trim(), daysAdded);
 
-                mWeatherPostsHourly.getValue().add(new WeatherPost.Builder(fivedaytmp, fivedaydsc)
-                        .addTime("FIVE DAY WEATHER")
-                        .addCityName(fivedaydt)
+                mWeatherPostsHourly.getValue().add(
+                        new WeatherPost.Builder(fivedaytmp, fivedaydsc.toUpperCase())
+                        .addTypeDay("FIVE DAY WEATHER")
+                        .addDayTime(fivedaydt)
                         .build());
                 fd_dt += 3;
                 fd_tmp += 3;
@@ -208,10 +192,6 @@ public class WeatherListViewModel extends AndroidViewModel {
             e.printStackTrace();
         }
         mWeatherPostsHourly.setValue(mWeatherPostsHourly.getValue());
-        mWeatherPostsFiveDay.setValue(mWeatherPostsFiveDay.getValue());
-
-
-
     }
 
 
@@ -222,26 +202,27 @@ public class WeatherListViewModel extends AndroidViewModel {
      */
     public void connectToWeather(String lat, String lon, String jwt) {
         String url = "https://team1-database.herokuapp.com/weather/" + lat + "/" + lon;
+        Log.i("URL LAT LONG", url);
         connectWithUrl(url, jwt);
     }
 
 
     /**
-     * Connect using a zipcode.
-     * @param zip the zipcode of the location.
+     * Connect using a zip code.
+     * @param zip the zip code of the location.
      */
     public void connectToWeatherZip(String zip, String jwt) {
-
-        Log.i("BUTTON PUSHED", zip);
-//        String zip = binding.requestedZipCode.toString();
-        // Check if has only 5 characters
-
+        Log.i("INPUT ZIP CODE", zip);
         String url = "https://team1-database.herokuapp.com/zip/" + zip;
         checkZip(url, jwt);
     }
 
-
-    public void checkZip(String url, String jwt) {
+    /**
+     * Checks the zip code for validity when accessing database for weather information.
+     * @param url the url that allows access to weather for the specific zip code.
+     * @param jwt the jwt to grant access for valid user.
+     */
+    private void checkZip(String url, String jwt) {
         try {
             Log.i("THE URL", url);
 
@@ -280,50 +261,37 @@ public class WeatherListViewModel extends AndroidViewModel {
             throw new IllegalStateException(
                     "Unexpected response in WeatherListViewModel: " + result);
         }
+        // This whole section is for parsing the json returned from the url
         try {
             String current = result.getString("current");
-            Log.i("CURRENT", current);
+            Log.i("CURRENT WEATHER", current);
 
             // gets the 3 split into an array, starts at 1 for some reason
             String[] splits = current.split("Weather: |temp: |dt: |Name:");
 
-
-            Log.i("current split", String.valueOf(splits.length));
-            for (int i = 0; i < splits.length; i++)  {
-                Log.i("FUCKING FUK" + String.valueOf(i), splits[i]);
-            }
-
-            // Weird instance where the endpoint returns two "Weather", so this checks for that and
-            // formats accordingly.
-
             String currentTemp;
             String currentDescription;
-            //String currentTime;
-            String currentCity;
+            String currentDayTime;
 
-            // four spaces, for some reason 0 index is nothing but counts as part of length???
             if (splits.length == 5) {
                 currentTemp = kelvinToFar(splits[2].trim());
                 currentDescription = splits[1].trim();
-                //currentTime = unixToDay(splits[3].trim(), 0);
-                currentCity = splits[4];
+                currentDayTime = splits[4];
 
-                // This is for when it adds the weird extra weather
             } else {
                 currentTemp = kelvinToFar(splits[3].trim());
                 currentDescription = splits[1].trim();
-                //currentTime = unixToDay(splits[4].trim(), 0);
-                currentCity = splits[5];
+                currentDayTime = splits[5];
             }
 
             // Clears the data so that multiple clicks onto weather does not produce
             // a recyclerview of 30 different clicks data
             mWeatherPostsHourly.getValue().clear();
 
-            mWeatherPostsHourly.getValue().add(new WeatherPost.Builder(currentTemp, currentDescription)
-                    //TIME IS THE CARD TITLE
-                    .addTime("CURRENT WEATHER")
-                    .addCityName(currentCity)
+            mWeatherPostsHourly.getValue().add(
+                    new WeatherPost.Builder(currentTemp, currentDescription.toUpperCase())
+                    .addTypeDay("CURRENT WEATHER")
+                    .addDayTime(currentDayTime)
                     .build());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -336,17 +304,7 @@ public class WeatherListViewModel extends AndroidViewModel {
          * @author Matthew Molina
          */
     private void connectWithUrl(String url, String jwt) {
-        //try {
-//            Log.i("Made it:", "HERE ONE");
-//            double double_lat = mLocation.getValue().getLatitude();
-//            double double_lon = mLocation.getValue().getLongitude();
-//            String lat = String.valueOf(double_lat);
-//            String lon = String.valueOf(double_lon);
-//            Log.i("LAT AND LONG", lat + " " + lon);
-
-
-            //String urlCurrentDay = "http://team1-database.herokuapp.com/weather/" + lat + "/" + lon;
-
+        Log.i("THIS IS THE URL WITHIN connectWithURL", url);
             Request request = new JsonObjectRequest(
                     Request.Method.GET,
                     url,
@@ -366,13 +324,9 @@ public class WeatherListViewModel extends AndroidViewModel {
                     10_000,
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            //Instantiate the RequestQueue and add the request to the queue
+            // Instantiate the RequestQueue and add the request to the queue
             RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                     .addToRequestQueue(request);
-
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
 
@@ -382,26 +336,31 @@ public class WeatherListViewModel extends AndroidViewModel {
      * @return the temperature in fahrenheit and string format
      */
     private String kelvinToFar(final String theTemp) {
-        Float kelvin = Float.parseFloat(theTemp);
-        //If 9.0 and 5.0 not stated as doubles then they will use int division and result in 1
+        float kelvin = Float.parseFloat(theTemp);
+        // If 9.0 and 5.0 not stated as doubles then they will use int division and result in 1
         double temp = (kelvin * (9.0/5.0)) - 459.67;
         long longTemp =  Math.round(temp);
-        // Apparently doing below converts the long to a string, maybe
-        // because it is a primitive??
         return longTemp + "°";
     }
 
-
+    /**
+     * Converts unix time to HH:mm.
+     * @param theDT the dt returned from the json, in unix time
+     * @return string with normal time returned
+     */
     private String unixToNormal(final String theDT) {
-        Log.i("THE DT", theDT);
         Date expiry = new Date(Long.parseLong(theDT) * 1000);
         String exp = expiry.toString();
-        //Log.i("UNIX TIME!!!!!", exp);
         DateFormat hourMinSec = new SimpleDateFormat("HH:mm");
         return hourMinSec.format(expiry);
     }
 
-
+    /**
+     * Converts unix time to EE MMM dd.
+     * @param theDT the dt returned from the json, in unix time
+     * @param daysAdded used to increase day count from input day
+     * @return string with date returned
+     */
     private String unixToDay(final String theDT, final int daysAdded) {
         DateFormat df = new SimpleDateFormat("EE MMM dd");
         Calendar cal = Calendar.getInstance();

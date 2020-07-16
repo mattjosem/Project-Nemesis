@@ -24,13 +24,9 @@ public class WeatherListFragment extends Fragment {
 
     private LocationViewModel mModel;
     private WeatherListViewModel mWeatherModel;
-    private WeatherListViewModel mWeatherModelMultiple;
     private FragmentWeatherListBinding binding;
 
     private UserInfoViewModel mUserModel;
-    //Hardcoded to Puyallup Lat Long, will update with location updates
-    private String Lat = "47.1854";
-    private String Lon = "-122.2929";
 
     public WeatherListFragment() {
         // Required empty public constructor
@@ -64,15 +60,25 @@ public class WeatherListFragment extends Fragment {
 
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherListViewModel.class);
 
-        //mWeatherModelMultiple.connectToWeatherMultiple();
-//        mWeatherModelCurrent.addResponseObserver(getViewLifecycleOwner(),
-//                this::observeWeatherCurrent);
-        //WeatherModelMultiple.addResponseObserver(getViewLifecycleOwner(),
-        //        this::observeWeatherMultiple);
         mWeatherModel.addWeatherListObserver(getViewLifecycleOwner(), weatherList -> {
             if (!weatherList.isEmpty()) {
-                WeatherRecyclerViewAdapter wRecyclerViewAdapter = new WeatherRecyclerViewAdapter(weatherList);
-                binding.listWeather.setAdapter(wRecyclerViewAdapter);
+                WeatherRecyclerViewAdapter currentRecyclerViewAdapter =
+                        new WeatherRecyclerViewAdapter(weatherList.subList(0, 1));
+                binding.listCurrentWeather.setAdapter(currentRecyclerViewAdapter);
+                if (weatherList.size() > 1) {
+                    WeatherRecyclerViewAdapter fiveDayRecyclerViewAdapter =
+                            new WeatherRecyclerViewAdapter(weatherList.subList(25, 30));
+                    binding.listFiveDay.setVisibility(View.VISIBLE);
+                    binding.listFiveDay.setAdapter(fiveDayRecyclerViewAdapter);
+
+                    WeatherRecyclerViewAdapter tfHourRecyclerViewAdapter =
+                            new WeatherRecyclerViewAdapter(weatherList.subList(1, 25));
+                    binding.list24Hour.setVisibility(View.VISIBLE);
+                    binding.list24Hour.setAdapter(tfHourRecyclerViewAdapter);
+                } else {
+                    binding.listFiveDay.setVisibility(View.INVISIBLE);
+                    binding.list24Hour.setVisibility(View.INVISIBLE);
+                }
             }
         });
 
@@ -80,30 +86,23 @@ public class WeatherListFragment extends Fragment {
 
         mModel= new ViewModelProvider(getActivity()).get(LocationViewModel.class);
         mModel.addLocationObserver(getViewLifecycleOwner(), location -> {
-            this.Lat = String.valueOf(location.getLatitude());
-            this.Lon = String.valueOf(location.getLongitude());
             if(location != null) {
-                Lat = String.valueOf(location.getLatitude());
-                Lon = String.valueOf(location.getLongitude());
+                String Lat = String.valueOf(location.getLatitude());
+                String Lon = String.valueOf(location.getLongitude());
                 Log.i("LAT INNER", Lat);
                 Log.i("LON INNER", Lon);
                 mWeatherModel.connectToWeather(Lat, Lon, mUserModel.getJWT());
-                getLatLong(Lat, Lon);
             }
         });
-        Log.i("LAT OUTER", Lat);
-        Log.i("LON OUTER", Lon);
 
         binding.zipCodeButton.setOnClickListener(button -> {
                     String zip = binding.requestedZipCode.getText().toString();
-                    //binding.zipCodeButton.setText(zip);
                     if (checkZipcode(zip)) {
                         mWeatherModel.connectToWeatherZip(zip, mUserModel.getJWT());
                     } else {
                         binding.requestedZipCode.setError("Not a valid Zip Code!");
                     }
                 });
-
 
         binding.mapFloatingButton.setOnClickListener(button ->
                         Navigation.findNavController(getView())
@@ -112,29 +111,23 @@ public class WeatherListFragment extends Fragment {
 
         WeatherListFragmentArgs args = WeatherListFragmentArgs.fromBundle(getArguments());
         String argLat = args.getLatitude();
-        String argLon = args.getLatitude();
+        String argLon = args.getLongitude();
         if (!argLat.equals("") && !argLon.equals("")) {
+            Log.i("ARGLAT AND ARGLON ARE EMPTY", argLat + " " + argLon);
             mWeatherModel.connectToWeather(argLat, argLon, mUserModel.getJWT());
         }
-//        mWeatherModelCurrent.connectToWeatherCurrent(Lat, Lon);
-
-
-        //mWeatherModelCurrent.connectToWeatherCurrent(Lat, Lon);
-
-
     }
 
     private boolean checkZipcode(String zip) {
         boolean flag = false;
         if (zip.length() == 5) {
             try {
-
                 //Strictly used to check if input is valid 5 digit number
                 Integer intZip = Integer.parseInt(zip);
 
                 //if it gets here then flag gets set to true, anyway else it is false
                 flag = true;
-                Log.i("THE INTZIP", String.valueOf(intZip));
+                Log.i("THE ZIP CODE", String.valueOf(intZip));
 
                 //At this point this is the best I can do with zip checking
                 //without utilizing a database with valid US Zips
@@ -143,15 +136,8 @@ public class WeatherListFragment extends Fragment {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                //binding.requestedZipCode.setError("Not a Valid Zip");
-                //Log.i("Error", e.toString());
             }
         }
         return flag;
-    }
-
-    private void getLatLong(String lat, String lon) {
-        Lat = lat;
-        Lon = lon;
     }
 }

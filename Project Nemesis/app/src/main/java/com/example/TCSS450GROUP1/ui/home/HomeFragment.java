@@ -29,14 +29,14 @@ public class HomeFragment extends Fragment {
     private ChatViewModel mChatModel;
     private UserInfoViewModel mUserModel;
     private HomeViewModel mModel;
-
     private CurrentWeatherViewModel mCurrentModel;
     private Double latD;
     private Double longD;
+
+
     public HomeFragment() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -46,8 +46,6 @@ public class HomeFragment extends Fragment {
         ViewModelProvider provider= new ViewModelProvider(getActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
         mModel = provider.get(HomeViewModel.class);
-
-
         mCurrentModel = provider.get(CurrentWeatherViewModel.class);
 
     }
@@ -59,17 +57,14 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater);
         return binding.getRoot();
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FragmentHomeBinding binding = FragmentHomeBinding.bind(getView());
 
         binding.textEmailHome.setText(mUserModel.getEmail());
-       // mCurrentModel.connect(mUserModel.getJWT(), lat, longD);
         mModel.addLocationObserver(getViewLifecycleOwner(), this::observeCurrentLocation);
-
-
-
     }
 
     private void observeCurrentLocation(Location location) {
@@ -77,8 +72,6 @@ public class HomeFragment extends Fragment {
         Double longitude = mModel.getCurrentLocation().getLongitude();
         mCurrentModel.connect(mUserModel.getJWT(), latitude, longitude );
         mCurrentModel.addResponseObserver(getViewLifecycleOwner(), this::observeCurrentWeather);
-     //   binding.weatherHome.setText(latitude);
-      //  binding.weatherTypeHome.setText(longitude);
     }
 
     private void observeCurrentWeather(JSONObject response) {
@@ -112,14 +105,12 @@ public class HomeFragment extends Fragment {
        // JSONObject jsonMessage = new JSONObject(response.getString("current"));
         String current = response.getString("current");
         String[] splits = current.split("dt: |temp: |Weather:");
-
-            Log.i("current", splits[0]);
-
+        Log.i("current", splits[0]);
         Log.i("current", response.getString("current"));
-        binding.weatherHome.setText(splits[3]);
+        binding.weatherHome.setText(splits[3].toUpperCase());
         Float kev = Float.valueOf(splits[2]);
-        String temp = String.valueOf(kelvinToFar(kev));
-         binding.currentTemperatureHome.setText(temp);
+        String temp = String.valueOf(kelvinToFar(kev)) + "°";
+        binding.currentTemperatureHome.setText(temp);
 
     }
 

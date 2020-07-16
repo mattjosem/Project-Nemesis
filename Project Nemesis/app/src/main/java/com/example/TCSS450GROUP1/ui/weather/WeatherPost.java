@@ -7,10 +7,10 @@ import java.io.Serializable;
  */
 public class WeatherPost implements Serializable {
 
-    private final String mCityName;
+    private final String mDayTime;
     private final String mTemperature;
     private final String mWeatherDescription;
-    private final String mTime;
+    private final String mTypeDay;
 
     /**
      * Helper class for building Credentials.
@@ -19,10 +19,10 @@ public class WeatherPost implements Serializable {
      * @author Matthew Molain
      */
     public static class Builder {
-        private String mCityName = "";
+        private String mDayTime = "";
         private String mTemperature = "";
         private String mWeatherDescription = "";
-        private String mTime = "";
+        private String mTypeDay = "";
 
 
         /**
@@ -39,11 +39,11 @@ public class WeatherPost implements Serializable {
         /**
          * Add an optional time for the weather.
          *
-         * @param Time an optional time, used for hourly weather
+         * @param typeDay an optional time, used for hourly weather
          * @return the Builder of this BlogPost
          */
-        public Builder addTime(final String Time) {
-            mTime = Time;
+        public Builder addTypeDay(final String typeDay) {
+            mTypeDay = typeDay;
             return this;
         }
 
@@ -51,11 +51,11 @@ public class WeatherPost implements Serializable {
         /**
          * Add an optional city name for the weather.
          *
-         * @param cityName an optional city name
+         * @param dayTime an optional city name
          * @return the Builder of this BlogPost
          */
-        public Builder addCityName(final String cityName) {
-            mCityName = cityName;
+        public Builder addDayTime(final String dayTime) {
+            mDayTime = dayTime;
             return this;
         }
 
@@ -66,15 +66,13 @@ public class WeatherPost implements Serializable {
     }
 
     private WeatherPost(final Builder builder) {
-        this.mCityName = builder.mCityName;
+        this.mDayTime = builder.mDayTime;
         this.mTemperature = builder.mTemperature;
         this.mWeatherDescription = builder.mWeatherDescription;
-        this.mTime = builder.mTime;
+        this.mTypeDay = builder.mTypeDay;
     }
 
-    public String getCityName() {
-        return mCityName;
-    }
+    public String getDayTime() { return mDayTime; }
 
     public String getTemperature() {
         return mTemperature;
@@ -84,7 +82,7 @@ public class WeatherPost implements Serializable {
         return mWeatherDescription;
     }
 
-    public String getTime() { return mTime;
+    public String getTypeDay() { return mTypeDay;
     }
 
 }
