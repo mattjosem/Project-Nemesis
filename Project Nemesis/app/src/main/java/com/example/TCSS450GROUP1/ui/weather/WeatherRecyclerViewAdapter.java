@@ -17,9 +17,11 @@ import java.util.List;
 /**
  * @author Matthew Molina
  */
+
 public class WeatherRecyclerViewAdapter extends
         RecyclerView.Adapter<WeatherRecyclerViewAdapter.WeatherViewHolder> {
 
+    /** List of weather posts to be added to recycler view. **/
     private final List<WeatherPost> mWeatherPosts;
 
     public WeatherRecyclerViewAdapter(List<WeatherPost> items) {
@@ -44,11 +46,15 @@ public class WeatherRecyclerViewAdapter extends
     }
 
     /**
-     * Objects from this class represent an Individual row View from the List
+     * Objects from this class represent an individual row from the list
      * of rows in the WeatherPost Recycler View.
      */
     public class WeatherViewHolder extends RecyclerView.ViewHolder {
+
+        /** The View. **/
         public final View mView;
+
+        /** The Binding. **/
         public FragmentWeatherPostBinding binding;
 
         public WeatherViewHolder(View view) {
@@ -57,7 +63,7 @@ public class WeatherRecyclerViewAdapter extends
             binding = FragmentWeatherPostBinding.bind(view);
         }
 
-        void setWeatherPost(final WeatherPost post) {
+        public void setWeatherPost(final WeatherPost post) {
             binding.textDayTime.setText(post.getDayTime());
             binding.textDescription.setText(post.getWeatherDescription());
             binding.textTypeDay.setText(post.getTypeDay());

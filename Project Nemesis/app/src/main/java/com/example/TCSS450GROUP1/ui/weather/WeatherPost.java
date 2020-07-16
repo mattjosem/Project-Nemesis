@@ -5,18 +5,26 @@ import java.io.Serializable;
 /**
  * @author Matthew Molina
  */
+
 public class WeatherPost implements Serializable {
 
+    /** Ends up being either the day, time, or city name. **/
     private final String mDayTime;
+
+    /** The temperature. **/
     private final String mTemperature;
+
+    /** The weather description. **/
     private final String mWeatherDescription;
+
+    /** Either current, five day, or 24-hour. **/
     private final String mTypeDay;
 
     /**
      * Helper class for building Credentials.
      *
      * @author Charles Bryan
-     * @author Matthew Molain
+     * @author Matthew Molina
      */
     public static class Builder {
         private String mDayTime = "";

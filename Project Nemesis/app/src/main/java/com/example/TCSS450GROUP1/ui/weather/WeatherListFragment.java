@@ -20,24 +20,29 @@ import com.example.TCSS450GROUP1.model.UserInfoViewModel;
 /**
  * @author Matthew Molina
  */
+
 public class WeatherListFragment extends Fragment {
 
+    /** The location view model, used for the Google Maps option. **/
     private LocationViewModel mModel;
+
+    /** The weather list view model, used to get weather information from database. **/
     private WeatherListViewModel mWeatherModel;
+
+    /** Binding of the main weather fragment, used to pass arguments from Google Maps fragment. **/
     private FragmentWeatherListBinding binding;
 
+    /** The UserInfoViewModel, used in this case to get the user's JWT. **/
     private UserInfoViewModel mUserModel;
 
+
+    /**
+     * Necessary empty constructor.
+     */
     public WeatherListFragment() {
         // Required empty public constructor
     }
 
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        mWeatherModelCurrent = new ViewModelProvider(getActivity()).get(WeatherListViewModel.class);
-//        mWeatherModelMultiple = new ViewModelProvider(getActivity()).get(WeatherListViewModel.class);
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,7 @@ public class WeatherListFragment extends Fragment {
         ViewModelProvider provider = new ViewModelProvider(getActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,12 +60,14 @@ public class WeatherListFragment extends Fragment {
         return binding.getRoot();
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherListViewModel.class);
 
+        // Used to update recycler views with up-to-date information based on the user's inputs
         mWeatherModel.addWeatherListObserver(getViewLifecycleOwner(), weatherList -> {
             if (!weatherList.isEmpty()) {
                 WeatherRecyclerViewAdapter currentRecyclerViewAdapter =
@@ -82,15 +90,13 @@ public class WeatherListFragment extends Fragment {
             }
         });
 
-
-
+        // Used to connect with the Google Maps fragment from user input as well as
+        // the initial location from the phone if user gives access
         mModel= new ViewModelProvider(getActivity()).get(LocationViewModel.class);
         mModel.addLocationObserver(getViewLifecycleOwner(), location -> {
             if(location != null) {
                 String Lat = String.valueOf(location.getLatitude());
                 String Lon = String.valueOf(location.getLongitude());
-                Log.i("LAT INNER", Lat);
-                Log.i("LON INNER", Lon);
                 mWeatherModel.connectToWeather(Lat, Lon, mUserModel.getJWT());
             }
         });
@@ -118,6 +124,13 @@ public class WeatherListFragment extends Fragment {
         }
     }
 
+
+    /**
+     * Checks that zip code is valid, checks for five digits, not perfect but without accessing
+     * database with all available zip codes this is the best way.
+     * @param zip the zip code
+     * @return true or false if zip code is valid, in this case a 5 digit integer
+     */
     private boolean checkZipcode(String zip) {
         boolean flag = false;
         if (zip.length() == 5) {

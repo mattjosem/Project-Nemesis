@@ -35,10 +35,16 @@ import java.util.Objects;
 /**
  * @author Matthew Molina
  */
+
 public class WeatherListViewModel extends AndroidViewModel {
 
+    /** Mutable live data to be used to update the posts that go into the recycler views. **/
     private MutableLiveData<List<WeatherPost>> mWeatherPostsHourly;
+
+    /** Mutable live data used to get location from Google Maps. **/
     private MutableLiveData<Location> mLocation;
+
+    /** Mutable live data to connect to the database. **/
     private MutableLiveData<JSONObject> mResponseCurrent;
 
 
@@ -121,6 +127,9 @@ public class WeatherListViewModel extends AndroidViewModel {
                 && result.has("forecast"))) {
             throw new IllegalStateException("Unexpected response in WeatherListViewModel: " + result);
         }
+
+        // This section is to get updated weather information from the database, and then updates
+        // weather posts that then are added to an arraylist and finally the recycler view
         try {
             // THERE ARE 50 HOURS IN THE JSON, NOT JUST THE 24 NEEDED //
             String current = result.getString("current");
@@ -255,6 +264,11 @@ public class WeatherListViewModel extends AndroidViewModel {
     }
 
 
+    /**
+     * Handles and parses the resulting JSON returned from the
+     * database with the user's given zip code.
+     * @param result the JSON from accessing database with user's input zip code
+     */
     private void handleResultZip(JSONObject result) {
         Log.i("THE ZIP JSON", result.toString());
         if (!result.has("current")) {
@@ -301,8 +315,10 @@ public class WeatherListViewModel extends AndroidViewModel {
 
 
     /**
-         * @author Matthew Molina
-         */
+     * Handles the connection with the specified url.
+     * @param url the url to be connected to
+     * @param jwt the user's jwt, used to validate user's account
+     */
     private void connectWithUrl(String url, String jwt) {
         Log.i("THIS IS THE URL WITHIN connectWithURL", url);
             Request request = new JsonObjectRequest(
@@ -343,6 +359,7 @@ public class WeatherListViewModel extends AndroidViewModel {
         return longTemp + "°";
     }
 
+
     /**
      * Converts unix time to HH:mm.
      * @param theDT the dt returned from the json, in unix time
@@ -354,6 +371,7 @@ public class WeatherListViewModel extends AndroidViewModel {
         DateFormat hourMinSec = new SimpleDateFormat("HH:mm");
         return hourMinSec.format(expiry);
     }
+
 
     /**
      * Converts unix time to EE MMM dd.
