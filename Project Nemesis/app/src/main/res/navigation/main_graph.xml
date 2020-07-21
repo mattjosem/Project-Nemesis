@@ -96,7 +96,7 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.TCSS450GROUP1.ui.weather.MapFragment"
-        android:label="MapFragment" >
+        android:label="@string/title_map">
         <action
             android:id="@+id/action_mapFragment_to_navigation_weather"
             app:destination="@id/navigation_weather"

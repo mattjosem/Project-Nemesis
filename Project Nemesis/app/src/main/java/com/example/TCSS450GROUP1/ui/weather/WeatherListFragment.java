@@ -97,7 +97,7 @@ public class WeatherListFragment extends Fragment {
             if(location != null) {
                 String Lat = String.valueOf(location.getLatitude());
                 String Lon = String.valueOf(location.getLongitude());
-                mWeatherModel.connectToWeather(Lat, Lon, mUserModel.getJWT());
+                locationWeather(Lat, Lon);
             }
         });
 
@@ -114,12 +114,26 @@ public class WeatherListFragment extends Fragment {
                         Navigation.findNavController(getView())
                                 .navigate(WeatherListFragmentDirections
                                         .actionNavigationWeatherToMapFragment()));
+    }
 
+    /**
+     * Gets the weather based on latitude and longitude, whether that is from the bundle
+     * arguments or phone location.
+     * @param lat the latitude
+     * @param lon the longitude
+     */
+    private void locationWeather(String lat, String lon) {
         WeatherListFragmentArgs args = WeatherListFragmentArgs.fromBundle(getArguments());
         String argLat = args.getLatitude();
         String argLon = args.getLongitude();
-        if (!argLat.equals("") && !argLon.equals("")) {
-            Log.i("ARGLAT AND ARGLON ARE EMPTY", argLat + " " + argLon);
+
+        // if argument(s) are empty, use current phone location for weather
+        if (argLat.equals("\"\"") || argLon.equals("\"\"")) {
+            Log.i("ARGLAT OR ARGLON ARE EMPTY", argLat + " " + argLon);
+            mWeatherModel.connectToWeather(lat, lon, mUserModel.getJWT());
+
+        // if arguments are not empty, use the marked map location for weather
+        } else {
             mWeatherModel.connectToWeather(argLat, argLon, mUserModel.getJWT());
         }
     }
